@@ -5,7 +5,7 @@ const clean = (v?: string) => (v ?? '').trim().replace(/^["']|["']$/g, '')
 /** Akzeptiert auch URLs mit Zusatz (z. B. ".../rest/v1/") und reduziert sie auf https://<projekt>.supabase.co */
 function normalizeUrl(raw: string) {
   try {
-    const u = new URL(raw)
+    const u = new URL(/^https?:\/\//.test(raw) ? raw : `https://${raw}`)
     return u.hostname.endsWith('.supabase.co') ? u.origin : ''
   } catch {
     return ''
