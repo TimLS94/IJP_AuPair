@@ -6,7 +6,7 @@ import { formatMonth } from '../lib/store'
 import type { Fit } from '../lib/matching'
 import { FitList, Img, MatchBadge, ScoreBadge } from './ui'
 
-function Photo({ aupair, className }: { aupair: AuPair; className: string }) {
+export function AuPairPhoto({ aupair, className }: { aupair: AuPair; className: string }) {
   if (aupair.photo) {
     return <Img src={aupair.photo} alt={aupair.name} className={className} />
   }
@@ -55,7 +55,7 @@ export function AuPairCard({
       className="card group cursor-pointer overflow-hidden transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-ink/5"
     >
       <div className="relative aspect-[4/5] overflow-hidden">
-        <Photo aupair={aupair} className="h-full w-full transition duration-500 group-hover:scale-105" />
+        <AuPairPhoto aupair={aupair} className="h-full w-full transition duration-500 group-hover:scale-105" />
         <div className="absolute right-3 top-3">
           <FavButton active={fav} onClick={onFav} />
         </div>
@@ -129,7 +129,7 @@ export function AuPairModal({
         className="grid max-h-[92vh] w-full max-w-3xl animate-pop overflow-y-auto rounded-t-3xl bg-cream sm:rounded-3xl md:grid-cols-[2fr_3fr]"
       >
         <div className="relative">
-          <Photo aupair={aupair} className="h-64 w-full md:h-full" />
+          <AuPairPhoto aupair={aupair} className="h-64 w-full md:h-full" />
           <div className="absolute left-3 top-3">
             <FavButton active={fav} onClick={onFav} />
           </div>
@@ -145,68 +145,7 @@ export function AuPairModal({
             <X size={16} />
           </button>
 
-          <p className="text-sm text-ink/60">
-            {aupair.flag} {aupair.country}
-          </p>
-          <h2 className="mt-1 text-3xl">
-            {aupair.name}, {aupair.age}
-          </h2>
-          <p className="mt-4 text-ink/70">{aupair.about}</p>
-
-          <dl className="mt-6 grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <dt className="label flex items-center gap-1.5">
-                <Languages size={12} /> Sprachen
-              </dt>
-              <dd>
-                Deutsch ({aupair.german}){aupair.languages.length > 0 && `, ${aupair.languages.join(', ')}`}
-              </dd>
-            </div>
-            <div>
-              <dt className="label flex items-center gap-1.5">
-                <Calendar size={12} /> Verfügbar
-              </dt>
-              <dd>ab {formatMonth(aupair.availableFrom)}</dd>
-            </div>
-            <div>
-              <dt className="label flex items-center gap-1.5">
-                <Clock size={12} /> Dauer
-              </dt>
-              <dd>{aupair.duration} Monate</dd>
-            </div>
-            <div>
-              <dt className="label flex items-center gap-1.5">
-                <Car size={12} /> Führerschein
-              </dt>
-              <dd>{aupair.license ? 'Ja' : 'Nein'}</dd>
-            </div>
-          </dl>
-
-          {aupair.experience.length > 0 && (
-            <div className="mt-6">
-              <p className="label">Erfahrung</p>
-              <div className="flex flex-wrap gap-1.5">
-                {aupair.experience.map((e) => (
-                  <span key={e} className="tag">
-                    {e}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="mt-6">
-            <p className="label">Außerdem</p>
-            <div className="flex flex-wrap gap-1.5">
-              {aupair.swims && <span className="tag">Kann schwimmen</span>}
-              <span className="tag">{aupair.smoker ? 'Raucht' : 'Nichtraucher'}</span>
-              <span className="tag">{aupair.petsOk ? 'Haustiere okay' : 'Lieber ohne Haustiere'}</span>
-              {aupair.specialNeedsExperience && <span className="tag">Erfahrung mit Förderbedarf</span>}
-              <span className="tag">Bis {aupair.maxChildren >= 6 ? '6+' : aupair.maxChildren} Kinder</span>
-              {aupair.diet !== 'Alles' && <span className="tag">{aupair.diet}</span>}
-              {aupair.areas.length > 0 && <span className="tag">Wohnlage: {aupair.areas.join(', ')}</span>}
-            </div>
-          </div>
+          <AuPairDetails aupair={aupair} />
 
           {fit && <FitList fit={fit} title="Passt zu Ihrer Familie" />}
 
@@ -219,5 +158,75 @@ export function AuPairModal({
         </div>
       </div>
     </div>
+  )
+}
+
+/** Profilinhalt ohne Foto und Aktionen – genutzt im Modal und in „Mein Profil“. */
+export function AuPairDetails({ aupair }: { aupair: AuPair }) {
+  return (
+    <>
+      <p className="text-sm text-ink/60">
+        {aupair.flag} {aupair.country}
+      </p>
+      <h2 className="mt-1 text-3xl">
+        {aupair.name}, {aupair.age}
+      </h2>
+      <p className="mt-4 text-ink/70">{aupair.about}</p>
+
+      <dl className="mt-6 grid grid-cols-2 gap-4 text-sm">
+        <div>
+          <dt className="label flex items-center gap-1.5">
+            <Languages size={12} /> Sprachen
+          </dt>
+          <dd>
+            Deutsch ({aupair.german}){aupair.languages.length > 0 && `, ${aupair.languages.join(', ')}`}
+          </dd>
+        </div>
+        <div>
+          <dt className="label flex items-center gap-1.5">
+            <Calendar size={12} /> Verfügbar
+          </dt>
+          <dd>ab {formatMonth(aupair.availableFrom)}</dd>
+        </div>
+        <div>
+          <dt className="label flex items-center gap-1.5">
+            <Clock size={12} /> Dauer
+          </dt>
+          <dd>{aupair.duration} Monate</dd>
+        </div>
+        <div>
+          <dt className="label flex items-center gap-1.5">
+            <Car size={12} /> Führerschein
+          </dt>
+          <dd>{aupair.license ? 'Ja' : 'Nein'}</dd>
+        </div>
+      </dl>
+
+      {aupair.experience.length > 0 && (
+        <div className="mt-6">
+          <p className="label">Erfahrung</p>
+          <div className="flex flex-wrap gap-1.5">
+            {aupair.experience.map((e) => (
+              <span key={e} className="tag">
+                {e}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="mt-6">
+        <p className="label">Außerdem</p>
+        <div className="flex flex-wrap gap-1.5">
+          {aupair.swims && <span className="tag">Kann schwimmen</span>}
+          <span className="tag">{aupair.smoker ? 'Raucht' : 'Nichtraucher'}</span>
+          <span className="tag">{aupair.petsOk ? 'Haustiere okay' : 'Lieber ohne Haustiere'}</span>
+          {aupair.specialNeedsExperience && <span className="tag">Erfahrung mit Förderbedarf</span>}
+          <span className="tag">Bis {aupair.maxChildren >= 6 ? '6+' : aupair.maxChildren} Kinder</span>
+          {aupair.diet !== 'Alles' && <span className="tag">{aupair.diet}</span>}
+          {aupair.areas.length > 0 && <span className="tag">Wohnlage: {aupair.areas.join(', ')}</span>}
+        </div>
+      </div>
+    </>
   )
 }

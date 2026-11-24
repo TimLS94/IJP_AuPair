@@ -7,6 +7,8 @@ import { fetchOwnAuPair, formatMonth, nextMonths, removePhoto, saveOwnAuPair, up
 import { useAuth } from '../lib/auth'
 import { images, languageSchool } from '../data/site'
 import { Chip, Img } from '../components/ui'
+import { AuPairDetails, AuPairPhoto } from '../components/AuPairCard'
+import { OwnProfile } from '../components/OwnProfile'
 
 const STEPS = ['Über dich', 'Sprache & Erfahrung', 'Was dir wichtig ist', 'Dein Jahr']
 const MAX_CHILDREN = [1, 2, 3, 4, 5, 6]
@@ -26,6 +28,7 @@ export default function Register() {
   const months = useMemo(() => nextMonths(12), [])
   const [step, setStep] = useState(0)
   const [done, setDone] = useState(false)
+  const [editing, setEditing] = useState(false)
   const [existing, setExisting] = useState<AuPair | null>(null)
   const [loadingOwn, setLoadingOwn] = useState(false)
   const [photo, setPhoto] = useState<File | null>(null)
@@ -146,6 +149,7 @@ export default function Register() {
       })
       setExisting(await fetchOwnAuPair(userId))
       setPhoto(null)
+      setEditing(false)
       setDone(true)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch (err) {
@@ -192,7 +196,7 @@ export default function Register() {
               }}
               className="btn-ghost"
             >
-              Profil bearbeiten
+              Mein Profil ansehen
             </button>
             <Link to="/#sprachschule" className="btn-ghost">
               Mehr zur Sprachschule
@@ -200,6 +204,29 @@ export default function Register() {
           </div>
         </div>
       </div>
+    )
+  }
+
+  if (userId && existing && !editing && !loadingOwn) {
+    return (
+      <OwnProfile
+        eyebrow="Für Au-pairs"
+        status={existing.status ?? 'pending'}
+        statusText={STATUS_TEXT}
+        previewLabel="So sehen Familien dein Profil"
+        photo={<AuPairPhoto aupair={existing} className="h-72 w-full md:h-full" />}
+        onEdit={() => {
+          setStep(0)
+          setEditing(true)
+        }}
+        actions={
+          <Link to="/gastfamilien" className="btn-coral">
+            Familien ansehen <ArrowRight size={16} />
+          </Link>
+        }
+      >
+        <AuPairDetails aupair={existing} />
+      </OwnProfile>
     )
   }
 
@@ -541,6 +568,10 @@ export default function Register() {
             {step > 0 ? (
               <button type="button" onClick={() => setStep((s) => s - 1)} className="btn-ghost">
                 <ArrowLeft size={16} /> Zurück
+              </button>
+            ) : existing ? (
+              <button type="button" onClick={() => setEditing(false)} className="btn-ghost">
+                Abbrechen
               </button>
             ) : (
               <span />

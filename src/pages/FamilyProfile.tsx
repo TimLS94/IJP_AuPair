@@ -22,6 +22,8 @@ import { fetchOwnFamily, saveOwnFamily } from '../lib/families'
 import { useAuth } from '../lib/auth'
 import { images } from '../data/site'
 import { Chip, Img } from '../components/ui'
+import { FamilyDetails, FamilyPhoto } from '../components/FamilyCard'
+import { OwnProfile } from '../components/OwnProfile'
 
 const STEPS = ['Ihre Familie', 'Kinder & Alltag', 'Ihr Angebot', 'Zeitraum & Vorstellung']
 const DURATIONS = [6, 10, 12]
@@ -40,6 +42,7 @@ export default function FamilyProfile() {
   const months = useMemo(() => nextMonths(12), [])
   const [step, setStep] = useState(0)
   const [done, setDone] = useState(false)
+  const [editing, setEditing] = useState(false)
   const [existing, setExisting] = useState<Family | null>(null)
   const [loadingOwn, setLoadingOwn] = useState(false)
   const [photo, setPhoto] = useState<File | null>(null)
@@ -188,6 +191,7 @@ export default function FamilyProfile() {
       })
       setExisting(await fetchOwnFamily(userId))
       setPhoto(null)
+      setEditing(false)
       setDone(true)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch (err) {
@@ -232,11 +236,34 @@ export default function FamilyProfile() {
               }}
               className="btn-ghost"
             >
-              Profil bearbeiten
+              Mein Profil ansehen
             </button>
           </div>
         </div>
       </div>
+    )
+  }
+
+  if (userId && existing && !editing && !loadingOwn) {
+    return (
+      <OwnProfile
+        eyebrow="Für Familien"
+        status={existing.status ?? 'pending'}
+        statusText={STATUS_TEXT}
+        previewLabel="So sehen Au-pairs Ihr Profil"
+        photo={<FamilyPhoto family={existing} className="h-72 w-full md:h-full" />}
+        onEdit={() => {
+          setStep(0)
+          setEditing(true)
+        }}
+        actions={
+          <Link to="/familien" className="btn-coral">
+            Au-pairs ansehen <ArrowRight size={16} />
+          </Link>
+        }
+      >
+        <FamilyDetails family={existing} />
+      </OwnProfile>
     )
   }
 
@@ -648,6 +675,10 @@ export default function FamilyProfile() {
             {step > 0 ? (
               <button type="button" onClick={() => setStep((s) => s - 1)} className="btn-ghost">
                 <ArrowLeft size={16} /> Zurück
+              </button>
+            ) : existing ? (
+              <button type="button" onClick={() => setEditing(false)} className="btn-ghost">
+                Abbrechen
               </button>
             ) : (
               <span />

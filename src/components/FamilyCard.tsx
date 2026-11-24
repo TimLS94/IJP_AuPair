@@ -7,7 +7,7 @@ import { FavButton } from './AuPairCard'
 import type { Fit } from '../lib/matching'
 import { FitList, Img, MatchBadge, ScoreBadge } from './ui'
 
-function Photo({ family, className }: { family: Family; className: string }) {
+export function FamilyPhoto({ family, className }: { family: Family; className: string }) {
   if (family.photo) {
     return <Img src={family.photo} alt={family.name} className={className} />
   }
@@ -41,7 +41,7 @@ export function FamilyCard({
       className="card group cursor-pointer overflow-hidden transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-ink/5"
     >
       <div className="relative aspect-[4/3] overflow-hidden">
-        <Photo family={family} className="h-full w-full transition duration-500 group-hover:scale-105" />
+        <FamilyPhoto family={family} className="h-full w-full transition duration-500 group-hover:scale-105" />
         <div className="absolute right-3 top-3">
           <FavButton active={liked} onClick={onLike} />
         </div>
@@ -114,7 +114,7 @@ export function FamilyModal({
         onClick={(e) => e.stopPropagation()}
         className="grid max-h-[92vh] w-full max-w-3xl animate-pop overflow-y-auto rounded-t-3xl bg-cream sm:rounded-3xl md:grid-cols-[2fr_3fr]"
       >
-        <Photo family={family} className="h-64 w-full md:h-full" />
+        <FamilyPhoto family={family} className="h-64 w-full md:h-full" />
 
         <div className="relative p-6 sm:p-8">
           <button
@@ -126,94 +126,7 @@ export function FamilyModal({
             <X size={16} />
           </button>
 
-          <p className="flex items-center gap-1 text-sm text-ink/60">
-            <MapPin size={13} /> {family.city}, {family.state} · {family.area}
-          </p>
-          <h2 className="mt-1 pr-10 text-3xl">{family.name}</h2>
-          <p className="mt-4 whitespace-pre-line text-ink/70">{family.about}</p>
-
-          <dl className="mt-6 grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <dt className="label flex items-center gap-1.5">
-                <Baby size={12} /> Kinder
-              </dt>
-              <dd>
-                {childrenText(family.children)}
-                {family.childAges.length > 0 && ` (${family.childAges.join(', ')})`}
-              </dd>
-            </div>
-            <div>
-              <dt className="label flex items-center gap-1.5">
-                <Languages size={12} /> Sprachen
-              </dt>
-              <dd>
-                Deutsch
-                {family.languages.length > 0 && `, ${family.languages.join(', ')}`}
-                <span className="text-ink/60"> · gewünscht: Deutsch ab {family.minGerman}</span>
-              </dd>
-            </div>
-            <div>
-              <dt className="label flex items-center gap-1.5">
-                <Calendar size={12} /> Start
-              </dt>
-              <dd>ab {formatMonth(family.startFrom)}</dd>
-            </div>
-            <div>
-              <dt className="label flex items-center gap-1.5">
-                <Clock size={12} /> Dauer
-              </dt>
-              <dd>{family.duration} Monate</dd>
-            </div>
-            <div>
-              <dt className="label flex items-center gap-1.5">
-                <Car size={12} /> Führerschein
-              </dt>
-              <dd>{family.needsLicense ? 'Erforderlich' : 'Nicht nötig'}</dd>
-            </div>
-            <div>
-              <dt className="label flex items-center gap-1.5">
-                <PawPrint size={12} /> Haustiere
-              </dt>
-              <dd>{family.pets ? 'Ja' : 'Nein'}</dd>
-            </div>
-          </dl>
-
-          {family.tasks.length > 0 && (
-            <div className="mt-6">
-              <p className="label">Aufgaben</p>
-              <div className="flex flex-wrap gap-1.5">
-                {family.tasks.map((t) => (
-                  <span key={t} className="tag">
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="mt-6">
-            <p className="label">Das bietet die Familie</p>
-            <div className="flex flex-wrap gap-1.5">
-              <span className="tag">{family.hoursPerWeek} Std./Woche</span>
-              <span className="tag">{family.pocketMoney} € Taschengeld</span>
-              {family.courseSupport && <span className="tag">Zuschuss Deutschkurs</span>}
-              {family.ownBathroom && <span className="tag">Eigenes Bad</span>}
-              {family.carPrivate && <span className="tag">Auto auch privat</span>}
-              {family.transitTicket && <span className="tag">ÖPNV-Ticket</span>}
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <p className="label">Wünsche & Haushalt</p>
-            <div className="flex flex-wrap gap-1.5">
-              {family.needsSwimming && <span className="tag">Schwimmen</span>}
-              {family.nonsmokerRequired && <span className="tag">Nichtraucher</span>}
-              {family.specialNeeds && <span className="tag">Kind mit Förderbedarf</span>}
-              {family.singleParent && <span className="tag">Alleinerziehend</span>}
-              {family.diet !== 'Alles' && <span className="tag">Ernährung: {family.diet}</span>}
-              {family.pets && <span className="tag">Haustiere</span>}
-            </div>
-          </div>
+          <FamilyDetails family={family} />
 
           {fit && <FitList fit={fit} title="Passt zu dir" />}
 
@@ -240,5 +153,101 @@ export function FamilyModal({
         </div>
       </div>
     </div>
+  )
+}
+
+/** Profilinhalt ohne Foto und Aktionen – genutzt im Modal und in „Mein Profil“. */
+export function FamilyDetails({ family }: { family: Family }) {
+  return (
+    <>
+      <p className="flex items-center gap-1 text-sm text-ink/60">
+        <MapPin size={13} /> {family.city}, {family.state} · {family.area}
+      </p>
+      <h2 className="mt-1 pr-10 text-3xl">{family.name}</h2>
+      <p className="mt-4 whitespace-pre-line text-ink/70">{family.about}</p>
+
+      <dl className="mt-6 grid grid-cols-2 gap-4 text-sm">
+        <div>
+          <dt className="label flex items-center gap-1.5">
+            <Baby size={12} /> Kinder
+          </dt>
+          <dd>
+            {childrenText(family.children)}
+            {family.childAges.length > 0 && ` (${family.childAges.join(', ')})`}
+          </dd>
+        </div>
+        <div>
+          <dt className="label flex items-center gap-1.5">
+            <Languages size={12} /> Sprachen
+          </dt>
+          <dd>
+            Deutsch
+            {family.languages.length > 0 && `, ${family.languages.join(', ')}`}
+            <span className="text-ink/60"> · gewünscht: Deutsch ab {family.minGerman}</span>
+          </dd>
+        </div>
+        <div>
+          <dt className="label flex items-center gap-1.5">
+            <Calendar size={12} /> Start
+          </dt>
+          <dd>ab {formatMonth(family.startFrom)}</dd>
+        </div>
+        <div>
+          <dt className="label flex items-center gap-1.5">
+            <Clock size={12} /> Dauer
+          </dt>
+          <dd>{family.duration} Monate</dd>
+        </div>
+        <div>
+          <dt className="label flex items-center gap-1.5">
+            <Car size={12} /> Führerschein
+          </dt>
+          <dd>{family.needsLicense ? 'Erforderlich' : 'Nicht nötig'}</dd>
+        </div>
+        <div>
+          <dt className="label flex items-center gap-1.5">
+            <PawPrint size={12} /> Haustiere
+          </dt>
+          <dd>{family.pets ? 'Ja' : 'Nein'}</dd>
+        </div>
+      </dl>
+
+      {family.tasks.length > 0 && (
+        <div className="mt-6">
+          <p className="label">Aufgaben</p>
+          <div className="flex flex-wrap gap-1.5">
+            {family.tasks.map((t) => (
+              <span key={t} className="tag">
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="mt-6">
+        <p className="label">Das bietet die Familie</p>
+        <div className="flex flex-wrap gap-1.5">
+          <span className="tag">{family.hoursPerWeek} Std./Woche</span>
+          <span className="tag">{family.pocketMoney} € Taschengeld</span>
+          {family.courseSupport && <span className="tag">Zuschuss Deutschkurs</span>}
+          {family.ownBathroom && <span className="tag">Eigenes Bad</span>}
+          {family.carPrivate && <span className="tag">Auto auch privat</span>}
+          {family.transitTicket && <span className="tag">ÖPNV-Ticket</span>}
+        </div>
+      </div>
+
+      <div className="mt-6">
+        <p className="label">Wünsche & Haushalt</p>
+        <div className="flex flex-wrap gap-1.5">
+          {family.needsSwimming && <span className="tag">Schwimmen</span>}
+          {family.nonsmokerRequired && <span className="tag">Nichtraucher</span>}
+          {family.specialNeeds && <span className="tag">Kind mit Förderbedarf</span>}
+          {family.singleParent && <span className="tag">Alleinerziehend</span>}
+          {family.diet !== 'Alles' && <span className="tag">Ernährung: {family.diet}</span>}
+          {family.pets && <span className="tag">Haustiere</span>}
+        </div>
+      </div>
+    </>
   )
 }
