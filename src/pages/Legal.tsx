@@ -182,6 +182,10 @@ export function Datenschutz() {
           <li>Vorname, Alter und Herkunftsland</li>
           <li>Deutschkenntnisse, weitere Sprachen, Erfahrungen und Führerschein</li>
           <li>gewünschter Beginn und Dauer des Au-pair-Jahres</li>
+          <li>
+            Angaben für das Matching: Schwimmen, Rauchen, Haustiere, Ernährung, Erfahrung mit besonderem Förderbedarf,
+            gewünschte Wohnlage und Kinderzahl
+          </li>
           <li>Ihren Profiltext und Ihr Foto</li>
         </ul>
         <p>
@@ -204,6 +208,11 @@ export function Datenschutz() {
           <li>Anzeigename, Wohnort, Bundesland und Wohnlage</li>
           <li>Anzahl und Altersgruppen der Kinder</li>
           <li>Sprachen im Haushalt, gewünschte Deutschkenntnisse, Aufgaben, Führerschein und Haustiere</li>
+          <li>Anforderungen an das Au-pair (z. B. Schwimmen, Nichtraucher), alleinerziehend, Ernährung im Haushalt</li>
+          <li>
+            Ihr Angebot: Wochenstunden, Taschengeld und Zusatzleistungen (z. B. Deutschkurs-Zuschuss, eigenes Bad)
+          </li>
+          <li>freiwillig: ob ein Kind besonderen Förderbedarf hat</li>
           <li>gewünschter Beginn und Dauer des Au-pair-Aufenthalts</li>
           <li>Ihren Profiltext und, falls hochgeladen, Ihr Foto</li>
         </ul>
@@ -211,6 +220,16 @@ export function Datenschutz() {
           Wir prüfen jedes Profil vor der Freigabe. Familienprofile sind <strong>nicht öffentlich</strong>; nach der
           Freigabe sehen sie nur angemeldete Au-pairs. Rechtsgrundlage für diese Sichtbarkeit ist Ihre Einwilligung
           (Art. 6 Abs. 1 lit. a DSGVO), die Sie jederzeit per E-Mail an {site.email} widerrufen können.
+        </p>
+        <p>
+          Die Angabe zum Förderbedarf eines Kindes kann Rückschlüsse auf die Gesundheit zulassen. Sie ist freiwillig;
+          wir verarbeiten sie nur mit Ihrer ausdrücklichen Einwilligung (Art. 9 Abs. 2 lit. a DSGVO), die Sie beim
+          Speichern des Profils erteilen und jederzeit widerrufen können. Sie wird angemeldeten Au-pairs nur als „Kind
+          mit Förderbedarf“ angezeigt, ohne weitere Details.
+        </p>
+        <p>
+          Aus den Angaben beider Seiten berechnet die Website automatisch, wie gut ein Profil zum eigenen passt (z. B.
+          „80 % passend“). Diese Anzeige dient nur der Orientierung; Entscheidungen trifft immer ein Mensch.
         </p>
         <p>
           Gastfamilien und Au-pairs können Profile auf ihre Merkliste setzen; wir speichern diese Auswahl im jeweiligen

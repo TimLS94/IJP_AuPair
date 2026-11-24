@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import type { Level } from '../data/aupairs'
+import type { Diet, Level } from '../data/aupairs'
 import type { Area, Family } from '../data/families'
 import { supabase } from './supabase'
 import { useAuth } from './auth'
@@ -21,12 +21,23 @@ interface FamilyRow {
   start_from: string
   duration: number
   about: string
+  hours_per_week: number
+  pocket_money: number
+  course_support: boolean
+  own_bathroom: boolean
+  car_private: boolean
+  transit_ticket: boolean
+  single_parent: boolean
+  special_needs: boolean
+  needs_swimming: boolean
+  nonsmoker_required: boolean
+  diet: Diet
   photo_path: string | null
   status: Family['status']
 }
 
 const COLUMNS =
-  'id, name, city, state, area, children, child_ages, languages, tasks, min_german, needs_license, pets, start_from, duration, about, photo_path, status'
+  'id, name, city, state, area, children, child_ages, languages, tasks, min_german, needs_license, pets, start_from, duration, about, hours_per_week, pocket_money, course_support, own_bathroom, car_private, transit_ticket, single_parent, special_needs, needs_swimming, nonsmoker_required, diet, photo_path, status'
 
 function fromRow(r: FamilyRow): Family {
   return {
@@ -45,6 +56,17 @@ function fromRow(r: FamilyRow): Family {
     startFrom: r.start_from,
     duration: r.duration,
     about: r.about,
+    hoursPerWeek: r.hours_per_week,
+    pocketMoney: r.pocket_money,
+    courseSupport: r.course_support,
+    ownBathroom: r.own_bathroom,
+    carPrivate: r.car_private,
+    transitTicket: r.transit_ticket,
+    singleParent: r.single_parent,
+    specialNeeds: r.special_needs,
+    needsSwimming: r.needs_swimming,
+    nonsmokerRequired: r.nonsmoker_required,
+    diet: r.diet,
     photo: photoUrl(r.photo_path),
     photoPath: r.photo_path,
     status: r.status,
@@ -69,6 +91,17 @@ function toRow(f: FamilyInput) {
     start_from: f.startFrom,
     duration: f.duration,
     about: f.about,
+    hours_per_week: f.hoursPerWeek,
+    pocket_money: f.pocketMoney,
+    course_support: f.courseSupport,
+    own_bathroom: f.ownBathroom,
+    car_private: f.carPrivate,
+    transit_ticket: f.transitTicket,
+    single_parent: f.singleParent,
+    special_needs: f.specialNeeds,
+    needs_swimming: f.needsSwimming,
+    nonsmoker_required: f.nonsmokerRequired,
+    diet: f.diet,
     photo_path: f.photoPath ?? null,
   }
 }

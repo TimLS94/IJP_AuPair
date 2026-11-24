@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Calendar, Car, Clock, Heart, Languages, X } from 'lucide-react'
 import type { AuPair } from '../data/aupairs'
 import { formatMonth } from '../lib/store'
-import { Img, MatchBadge } from './ui'
+import type { Fit } from '../lib/matching'
+import { FitList, Img, MatchBadge, ScoreBadge } from './ui'
 
 function Photo({ aupair, className }: { aupair: AuPair; className: string }) {
   if (aupair.photo) {
@@ -37,12 +38,14 @@ export function AuPairCard({
   aupair,
   fav,
   match = false,
+  score,
   onFav,
   onOpen,
 }: {
   aupair: AuPair
   fav: boolean
   match?: boolean
+  score?: number
   onFav: () => void
   onOpen: () => void
 }) {
@@ -58,6 +61,7 @@ export function AuPairCard({
         </div>
         <div className="absolute bottom-3 left-3 flex gap-1.5">
           {match && <MatchBadge />}
+          {score !== undefined && <ScoreBadge percent={score} />}
           <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium backdrop-blur">
             Deutsch {aupair.german}
           </span>
@@ -92,11 +96,13 @@ export function AuPairCard({
 export function AuPairModal({
   aupair,
   fav,
+  fit,
   onFav,
   onClose,
 }: {
   aupair: AuPair
   fav: boolean
+  fit?: Fit
   onFav: () => void
   onClose: () => void
 }) {
@@ -188,6 +194,21 @@ export function AuPairModal({
               </div>
             </div>
           )}
+
+          <div className="mt-6">
+            <p className="label">Außerdem</p>
+            <div className="flex flex-wrap gap-1.5">
+              {aupair.swims && <span className="tag">Kann schwimmen</span>}
+              <span className="tag">{aupair.smoker ? 'Raucht' : 'Nichtraucher'}</span>
+              <span className="tag">{aupair.petsOk ? 'Haustiere okay' : 'Lieber ohne Haustiere'}</span>
+              {aupair.specialNeedsExperience && <span className="tag">Erfahrung mit Förderbedarf</span>}
+              <span className="tag">Bis {aupair.maxChildren >= 6 ? '6+' : aupair.maxChildren} Kinder</span>
+              {aupair.diet !== 'Alles' && <span className="tag">{aupair.diet}</span>}
+              {aupair.areas.length > 0 && <span className="tag">Wohnlage: {aupair.areas.join(', ')}</span>}
+            </div>
+          </div>
+
+          {fit && <FitList fit={fit} title="Passt zu Ihrer Familie" />}
 
           <Link to={`/kontakt?aupair=${encodeURIComponent(aupair.name)}`} className="btn-coral mt-8 w-full">
             {aupair.name} über IJP anfragen <ArrowRight size={16} />

@@ -1,7 +1,21 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Camera, Car, Check, Clock, Loader2, PartyPopper, PawPrint } from 'lucide-react'
-import { LANGUAGES, LEVELS, type Level } from '../data/aupairs'
+import {
+  ArrowLeft,
+  ArrowRight,
+  Bath,
+  Camera,
+  Car,
+  Check,
+  Clock,
+  GraduationCap,
+  Loader2,
+  PartyPopper,
+  PawPrint,
+  Ticket,
+  Waves,
+} from 'lucide-react'
+import { DIETS, LANGUAGES, LEVELS, type Diet, type Level } from '../data/aupairs'
 import { AREAS, CHILD_AGES, STATES, TASKS, type Area, type Family } from '../data/families'
 import { formatMonth, nextMonths, removePhoto, uploadPhoto } from '../lib/store'
 import { fetchOwnFamily, saveOwnFamily } from '../lib/families'
@@ -9,7 +23,7 @@ import { useAuth } from '../lib/auth'
 import { images } from '../data/site'
 import { Chip, Img } from '../components/ui'
 
-const STEPS = ['Ihre Familie', 'Kinder & Alltag', 'Zeitraum & Vorstellung']
+const STEPS = ['Ihre Familie', 'Kinder & Alltag', 'Ihr Angebot', 'Zeitraum & Vorstellung']
 const DURATIONS = [6, 10, 12]
 const MAX_PHOTO = 5 * 1024 * 1024
 
@@ -46,6 +60,17 @@ export default function FamilyProfile() {
     startFrom: months[2],
     duration: 12,
     about: '',
+    hoursPerWeek: '30',
+    pocketMoney: '280',
+    courseSupport: true,
+    ownBathroom: false,
+    carPrivate: false,
+    transitTicket: false,
+    singleParent: false,
+    specialNeeds: false,
+    needsSwimming: false,
+    nonsmokerRequired: true,
+    diet: 'Alles' as Diet,
     consent: false,
   })
 
@@ -71,6 +96,17 @@ export default function FamilyProfile() {
             startFrom: own.startFrom,
             duration: own.duration,
             about: own.about,
+            hoursPerWeek: String(own.hoursPerWeek),
+            pocketMoney: String(own.pocketMoney),
+            courseSupport: own.courseSupport,
+            ownBathroom: own.ownBathroom,
+            carPrivate: own.carPrivate,
+            transitTicket: own.transitTicket,
+            singleParent: own.singleParent,
+            specialNeeds: own.specialNeeds,
+            needsSwimming: own.needsSwimming,
+            nonsmokerRequired: own.nonsmokerRequired,
+            diet: own.diet,
             consent: true,
           })
         } else {
@@ -137,6 +173,17 @@ export default function FamilyProfile() {
         startFrom: form.startFrom,
         duration: form.duration,
         about: form.about.trim(),
+        hoursPerWeek: Number(form.hoursPerWeek),
+        pocketMoney: Number(form.pocketMoney),
+        courseSupport: form.courseSupport,
+        ownBathroom: form.ownBathroom,
+        carPrivate: form.carPrivate,
+        transitTicket: form.transitTicket,
+        singleParent: form.singleParent,
+        specialNeeds: form.specialNeeds,
+        needsSwimming: form.needsSwimming,
+        nonsmokerRequired: form.nonsmokerRequired,
+        diet: form.diet,
         photoPath,
       })
       setExisting(await fetchOwnFamily(userId))
@@ -437,12 +484,95 @@ export default function FamilyProfile() {
                     <Chip active={form.pets} onClick={() => set('pets', !form.pets)}>
                       <PawPrint size={14} /> Haustiere im Haushalt
                     </Chip>
+                    <Chip active={form.needsSwimming} onClick={() => set('needsSwimming', !form.needsSwimming)}>
+                      <Waves size={14} /> Au-pair muss schwimmen können
+                    </Chip>
+                    <Chip
+                      active={form.nonsmokerRequired}
+                      onClick={() => set('nonsmokerRequired', !form.nonsmokerRequired)}
+                    >
+                      Nur Nichtraucher
+                    </Chip>
+                    <Chip active={form.specialNeeds} onClick={() => set('specialNeeds', !form.specialNeeds)}>
+                      Kind mit besonderem Förderbedarf
+                    </Chip>
+                    <Chip active={form.singleParent} onClick={() => set('singleParent', !form.singleParent)}>
+                      Alleinerziehend
+                    </Chip>
+                  </div>
+                </div>
+                <div>
+                  <p className="label">Ernährung im Haushalt</p>
+                  <div className="flex flex-wrap gap-2">
+                    {DIETS.map((d) => (
+                      <Chip key={d} active={form.diet === d} onClick={() => set('diet', d)}>
+                        {d === 'Alles' ? 'Keine Besonderheiten' : d}
+                      </Chip>
+                    ))}
                   </div>
                 </div>
               </>
             )}
 
             {step === 2 && (
+              <>
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div>
+                    <label className="label" htmlFor="fp-hours">
+                      Stunden pro Woche
+                    </label>
+                    <input
+                      id="fp-hours"
+                      required
+                      type="number"
+                      min={1}
+                      max={30}
+                      value={form.hoursPerWeek}
+                      onChange={(e) => set('hoursPerWeek', e.target.value)}
+                      className="input"
+                    />
+                    <p className="mt-1.5 text-xs text-ink/50">Höchstens 30 Stunden pro Woche.</p>
+                  </div>
+                  <div>
+                    <label className="label" htmlFor="fp-money">
+                      Taschengeld (€ pro Monat)
+                    </label>
+                    <input
+                      id="fp-money"
+                      required
+                      type="number"
+                      min={0}
+                      max={2000}
+                      value={form.pocketMoney}
+                      onChange={(e) => set('pocketMoney', e.target.value)}
+                      className="input"
+                    />
+                    <p className="mt-1.5 text-xs text-ink/50">
+                      Bitte den aktuellen gesetzlichen Mindestbetrag beachten.
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <p className="label">Das bieten Sie zusätzlich (neben Zimmer und Verpflegung)</p>
+                  <div className="flex flex-wrap gap-2">
+                    <Chip active={form.courseSupport} onClick={() => set('courseSupport', !form.courseSupport)}>
+                      <GraduationCap size={14} /> Zuschuss zum Deutschkurs
+                    </Chip>
+                    <Chip active={form.ownBathroom} onClick={() => set('ownBathroom', !form.ownBathroom)}>
+                      <Bath size={14} /> Eigenes Bad
+                    </Chip>
+                    <Chip active={form.carPrivate} onClick={() => set('carPrivate', !form.carPrivate)}>
+                      <Car size={14} /> Auto auch privat
+                    </Chip>
+                    <Chip active={form.transitTicket} onClick={() => set('transitTicket', !form.transitTicket)}>
+                      <Ticket size={14} /> ÖPNV-Ticket
+                    </Chip>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {step === 3 && (
               <>
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
@@ -499,7 +629,9 @@ export default function FamilyProfile() {
                   />
                   <span>
                     Ich bin einverstanden, dass IJP unser Familienprofil nach Prüfung für angemeldete Au-pairs auf
-                    dieser Website sichtbar macht. Widerruf jederzeit per E-Mail möglich. Mehr in der{' '}
+                    dieser Website sichtbar macht
+                    {form.specialNeeds && ' – ausdrücklich auch die freiwillige Angabe, dass ein Kind Förderbedarf hat'}
+                    . Widerruf jederzeit per E-Mail möglich. Mehr in der{' '}
                     <Link to="/datenschutz" target="_blank" className="underline underline-offset-4">
                       Datenschutzerklärung
                     </Link>

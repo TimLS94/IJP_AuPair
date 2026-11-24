@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { Check, X } from 'lucide-react'
+import type { Fit } from '../lib/matching'
 
 export function Img({ src, alt, className = '' }: { src?: string; alt: string; className?: string }) {
   const [failed, setFailed] = useState(false)
@@ -64,5 +66,33 @@ export function Chip({ active, onClick, children }: { active: boolean; onClick: 
     <button type="button" aria-pressed={active} onClick={onClick} className={`chip ${active ? 'chip-active' : ''}`}>
       {children}
     </button>
+  )
+}
+
+export function ScoreBadge({ percent }: { percent: number }) {
+  const tone = percent >= 80 ? 'bg-forest text-cream' : percent >= 50 ? 'bg-sun text-ink' : 'bg-white/90 text-ink/70'
+  return <span className={`rounded-full px-3 py-1 text-xs font-medium backdrop-blur ${tone}`}>{percent} % passend</span>
+}
+
+export function FitList({ fit, title }: { fit: Fit; title: string }) {
+  return (
+    <div className="mt-6 rounded-2xl bg-white p-4">
+      <p className="label flex items-center justify-between">
+        <span>{title}</span>
+        <span className="text-ink">{fit.percent} %</span>
+      </p>
+      <ul className="mt-2 space-y-1.5 text-sm">
+        {fit.items.map((i) => (
+          <li key={i.label} className="flex items-start gap-2">
+            {i.ok ? (
+              <Check size={15} className="mt-0.5 shrink-0 text-forest" />
+            ) : (
+              <X size={15} className="mt-0.5 shrink-0 text-coral" />
+            )}
+            <span className={i.ok ? '' : 'text-ink/60'}>{i.label}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }

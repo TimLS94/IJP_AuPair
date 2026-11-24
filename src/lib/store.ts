@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import type { AuPair, Level } from '../data/aupairs'
+import type { AuPair, Diet, Level } from '../data/aupairs'
 import { supabase } from './supabase'
 import { useAuth } from './auth'
 
@@ -16,12 +16,19 @@ interface AuPairRow {
   available_from: string
   duration: number
   about: string
+  swims: boolean
+  smoker: boolean
+  pets_ok: boolean
+  special_needs_experience: boolean
+  max_children: number
+  areas: string[]
+  diet: Diet
   photo_path: string | null
   status: AuPair['status']
 }
 
 const COLUMNS =
-  'id, name, age, country, flag, languages, german, experience, license, available_from, duration, about, photo_path, status'
+  'id, name, age, country, flag, languages, german, experience, license, available_from, duration, about, swims, smoker, pets_ok, special_needs_experience, max_children, areas, diet, photo_path, status'
 
 export function photoUrl(path: string | null) {
   return path ? supabase.storage.from('photos').getPublicUrl(path).data.publicUrl : undefined
@@ -41,6 +48,13 @@ function fromRow(r: AuPairRow): AuPair {
     availableFrom: r.available_from,
     duration: r.duration,
     about: r.about,
+    swims: r.swims,
+    smoker: r.smoker,
+    petsOk: r.pets_ok,
+    specialNeedsExperience: r.special_needs_experience,
+    maxChildren: r.max_children,
+    areas: r.areas,
+    diet: r.diet,
     photo: photoUrl(r.photo_path),
     photoPath: r.photo_path,
     status: r.status,
@@ -62,6 +76,13 @@ function toRow(a: AuPairInput) {
     available_from: a.availableFrom,
     duration: a.duration,
     about: a.about,
+    swims: a.swims,
+    smoker: a.smoker,
+    pets_ok: a.petsOk,
+    special_needs_experience: a.specialNeedsExperience,
+    max_children: a.maxChildren,
+    areas: a.areas,
+    diet: a.diet,
     photo_path: a.photoPath ?? null,
   }
 }

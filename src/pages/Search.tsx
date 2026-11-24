@@ -5,6 +5,8 @@ import { EXPERIENCE, LEVELS, type AuPair, type Level } from '../data/aupairs'
 import { fetchApprovedAuPairs, formatMonth, nextMonths, useFavorites } from '../lib/store'
 import { fetchOwnFamily, useMatches } from '../lib/families'
 import { useAuth } from '../lib/auth'
+import { computeFit } from '../lib/matching'
+import type { Family } from '../data/families'
 import { AuPairCard, AuPairModal } from '../components/AuPairCard'
 import { Chip } from '../components/ui'
 
@@ -46,13 +48,23 @@ export default function Search() {
   const { matches, reload: reloadMatches } = useMatches()
   const [newMatch, setNewMatch] = useState('')
   const [hasProfile, setHasProfile] = useState(true)
+  const [ownFamily, setOwnFamily] = useState<Family | null>(null)
 
   useEffect(() => {
     if (!familyUserId) return
     fetchOwnFamily(familyUserId)
-      .then((f) => setHasProfile(Boolean(f)))
+      .then((f) => {
+        setHasProfile(Boolean(f))
+        setOwnFamily(f)
+      })
       .catch(console.error)
   }, [familyUserId])
+
+  // Passung zum eigenen Familienprofil (nur für Familien mit Profil)
+  const fits = useMemo(
+    () => (ownFamily ? new Map(all.map((a) => [a.id, computeFit(ownFamily, a)])) : null),
+    [ownFamily, all],
+  )
 
   const [q, setQ] = useState('')
   const [country, setCountry] = useState('')
@@ -67,7 +79,7 @@ export default function Search() {
 
   const results = useMemo(() => {
     const needle = q.trim().toLowerCase()
-    return all.filter((a) => {
+    const filtered = all.filter((a) => {
       if (needle && !`${a.name} ${a.country} ${a.about}`.toLowerCase().includes(needle)) return false
       if (country && a.country !== country) return false
       if (language && !a.languages.includes(language)) return false
@@ -77,7 +89,8 @@ export default function Search() {
       if (onlyFavs && !favs.includes(a.id)) return false
       return tags.every((t) => a.experience.includes(t))
     })
-  }, [all, q, country, language, minGerman, startBy, tags, license, onlyFavs, favs])
+    return fits ? [...filtered].sort((x, y) => fits.get(y.id)!.percent - fits.get(x.id)!.percent) : filtered
+  }, [all, q, country, language, minGerman, startBy, tags, license, onlyFavs, favs, fits])
 
   const activeCount =
     [country, language, startBy].filter(Boolean).length + (minGerman !== 'A1' ? 1 : 0) + tags.length + (license ? 1 : 0)
@@ -231,6 +244,7 @@ export default function Search() {
       <div className="mt-8 flex items-center justify-between text-sm text-ink/60">
         <span>
           {results.length} {results.length === 1 ? 'Profil' : 'Profile'}
+          {fits && ' · sortiert nach Passung'}
         </span>
         {(activeCount > 0 || q || onlyFavs) && (
           <button type="button" onClick={reset} className="underline underline-offset-4 hover:text-coral">
@@ -255,6 +269,7 @@ export default function Search() {
               aupair={a}
               fav={favs.includes(a.id)}
               match={matches.some((m) => m.aupairId === a.id)}
+              score={fits?.get(a.id)?.percent}
               onFav={() => toggle(a.id)}
               onOpen={() => setSelected(a)}
             />
@@ -294,6 +309,7 @@ export default function Search() {
         <AuPairModal
           aupair={selected}
           fav={favs.includes(selected.id)}
+          fit={fits?.get(selected.id)}
           onFav={() => toggle(selected.id)}
           onClose={() => setSelected(null)}
         />

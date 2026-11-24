@@ -6,6 +6,9 @@ import { AREAS, CHILD_AGES, type Family } from '../data/families'
 import { formatMonth, nextMonths } from '../lib/store'
 import { fetchApprovedFamilies, useFamilyLikes, useMatches } from '../lib/families'
 import { useAuth } from '../lib/auth'
+import { computeFit } from '../lib/matching'
+import { fetchOwnAuPair } from '../lib/store'
+import type { AuPair } from '../data/aupairs'
 import { FamilyCard, FamilyModal } from '../components/FamilyCard'
 import { Chip } from '../components/ui'
 
@@ -32,6 +35,25 @@ export default function Families() {
   const states = useMemo(() => [...new Set(all.map((f) => f.state))].sort(), [all])
 
   const { likes, toggle: toggleLike, canLike } = useFamilyLikes()
+
+  // Eigenes Au-pair-Profil für die Passungs-Anzeige
+  const aupairUserId = profile?.role === 'aupair' ? session?.user.id : undefined
+  const [ownAupair, setOwnAupair] = useState<AuPair | null>(null)
+  const [hasProfile, setHasProfile] = useState(true)
+  useEffect(() => {
+    if (!aupairUserId) return
+    fetchOwnAuPair(aupairUserId)
+      .then((a) => {
+        setOwnAupair(a)
+        setHasProfile(Boolean(a))
+      })
+      .catch(console.error)
+  }, [aupairUserId])
+
+  const fits = useMemo(
+    () => (ownAupair ? new Map(all.map((f) => [f.id, computeFit(f, ownAupair)])) : null),
+    [ownAupair, all],
+  )
   const { matches, reload: reloadMatches } = useMatches()
   const [newMatch, setNewMatch] = useState('')
 
@@ -59,7 +81,7 @@ export default function Families() {
 
   const results = useMemo(() => {
     const needle = q.trim().toLowerCase()
-    return all.filter((f) => {
+    const filtered = all.filter((f) => {
       if (needle && !`${f.name} ${f.city} ${f.state} ${f.about}`.toLowerCase().includes(needle)) return false
       if (state && f.state !== state) return false
       if (area && f.area !== area) return false
@@ -70,7 +92,8 @@ export default function Families() {
       if (onlyLikes && !likes.includes(f.id)) return false
       return ages.every((a) => f.childAges.includes(a))
     })
-  }, [all, q, state, area, startFrom, myGerman, ages, noPets, noLicense, onlyLikes, likes])
+    return fits ? [...filtered].sort((x, y) => fits.get(y.id)!.percent - fits.get(x.id)!.percent) : filtered
+  }, [all, q, state, area, startFrom, myGerman, ages, noPets, noLicense, onlyLikes, likes, fits])
 
   const activeCount =
     [state, area, startFrom, myGerman].filter(Boolean).length + ages.length + (noPets ? 1 : 0) + (noLicense ? 1 : 0)
@@ -134,6 +157,16 @@ export default function Families() {
               Match mit {newMatch}!
               <Link to="/matches" className="underline underline-offset-4">
                 Matches ansehen
+              </Link>
+            </p>
+          )}
+
+          {canLike && !hasProfile && (
+            <p className="mt-6 flex flex-wrap items-center gap-3 rounded-2xl bg-sun/40 px-5 py-4 text-sm">
+              Du hast noch kein Profil. Damit siehst du, welche Familien zu dir passen – und Familien können dich
+              finden.
+              <Link to="/aupair" className="underline underline-offset-4">
+                Profil anlegen
               </Link>
             </p>
           )}
@@ -258,6 +291,7 @@ export default function Families() {
           <div className="mt-8 flex items-center justify-between text-sm text-ink/60">
             <span>
               {results.length} {results.length === 1 ? 'Familie' : 'Familien'}
+              {fits && ' · sortiert nach Passung'}
             </span>
             {(activeCount > 0 || q || onlyLikes) && (
               <button type="button" onClick={reset} className="underline underline-offset-4 hover:text-coral">
@@ -282,6 +316,7 @@ export default function Families() {
                   family={f}
                   liked={likes.includes(f.id)}
                   match={isMatch(f.id)}
+                  score={fits?.get(f.id)?.percent}
                   onLike={() => toggle(f)}
                   onOpen={() => setSelected(f)}
                 />
@@ -310,6 +345,7 @@ export default function Families() {
         <FamilyModal
           family={selected}
           liked={likes.includes(selected.id)}
+          fit={fits?.get(selected.id)}
           match={isMatch(selected.id)}
           canLike={canLike}
           onLike={() => toggle(selected)}

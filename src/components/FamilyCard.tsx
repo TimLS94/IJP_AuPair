@@ -4,7 +4,8 @@ import { ArrowRight, Baby, Calendar, Car, Clock, Heart, Languages, MapPin, PawPr
 import type { Family } from '../data/families'
 import { formatMonth } from '../lib/store'
 import { FavButton } from './AuPairCard'
-import { Img, MatchBadge } from './ui'
+import type { Fit } from '../lib/matching'
+import { FitList, Img, MatchBadge, ScoreBadge } from './ui'
 
 function Photo({ family, className }: { family: Family; className: string }) {
   if (family.photo) {
@@ -23,12 +24,14 @@ export function FamilyCard({
   family,
   liked,
   match,
+  score,
   onLike,
   onOpen,
 }: {
   family: Family
   liked: boolean
   match: boolean
+  score?: number
   onLike: () => void
   onOpen: () => void
 }) {
@@ -44,6 +47,7 @@ export function FamilyCard({
         </div>
         <div className="absolute bottom-3 left-3 flex gap-1.5">
           {match && <MatchBadge />}
+          {score !== undefined && <ScoreBadge percent={score} />}
           <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium backdrop-blur">
             {childrenText(family.children)}
           </span>
@@ -76,12 +80,14 @@ export function FamilyModal({
   liked,
   match,
   canLike,
+  fit,
   onLike,
   onClose,
 }: {
   family: Family
   liked: boolean
   match: boolean
+  fit?: Fit
   canLike: boolean
   onLike: () => void
   onClose: () => void
@@ -184,6 +190,32 @@ export function FamilyModal({
               </div>
             </div>
           )}
+
+          <div className="mt-6">
+            <p className="label">Das bietet die Familie</p>
+            <div className="flex flex-wrap gap-1.5">
+              <span className="tag">{family.hoursPerWeek} Std./Woche</span>
+              <span className="tag">{family.pocketMoney} € Taschengeld</span>
+              {family.courseSupport && <span className="tag">Zuschuss Deutschkurs</span>}
+              {family.ownBathroom && <span className="tag">Eigenes Bad</span>}
+              {family.carPrivate && <span className="tag">Auto auch privat</span>}
+              {family.transitTicket && <span className="tag">ÖPNV-Ticket</span>}
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <p className="label">Wünsche & Haushalt</p>
+            <div className="flex flex-wrap gap-1.5">
+              {family.needsSwimming && <span className="tag">Schwimmen</span>}
+              {family.nonsmokerRequired && <span className="tag">Nichtraucher</span>}
+              {family.specialNeeds && <span className="tag">Kind mit Förderbedarf</span>}
+              {family.singleParent && <span className="tag">Alleinerziehend</span>}
+              {family.diet !== 'Alles' && <span className="tag">Ernährung: {family.diet}</span>}
+              {family.pets && <span className="tag">Haustiere</span>}
+            </div>
+          </div>
+
+          {fit && <FitList fit={fit} title="Passt zu dir" />}
 
           {match ? (
             <>

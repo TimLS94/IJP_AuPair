@@ -1,6 +1,9 @@
 export const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1'] as const
 export type Level = (typeof LEVELS)[number]
 
+export const DIETS = ['Alles', 'Vegetarisch', 'Vegan'] as const
+export type Diet = (typeof DIETS)[number]
+
 export interface AuPair {
   id: string
   name: string
@@ -14,6 +17,13 @@ export interface AuPair {
   availableFrom: string
   duration: number
   about: string
+  swims: boolean
+  smoker: boolean
+  petsOk: boolean
+  specialNeedsExperience: boolean
+  maxChildren: number
+  areas: string[]
+  diet: Diet
   photo?: string
   photoPath?: string | null
   status?: 'pending' | 'approved' | 'rejected'

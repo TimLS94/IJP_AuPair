@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Camera, Car, Check, Clock, Loader2, PartyPopper } from 'lucide-react'
-import { COUNTRIES, EXPERIENCE, LANGUAGES, LEVELS, type AuPair, type Level } from '../data/aupairs'
+import { ArrowLeft, ArrowRight, Camera, Car, Check, Clock, Loader2, PartyPopper, PawPrint, Waves } from 'lucide-react'
+import { COUNTRIES, DIETS, EXPERIENCE, LANGUAGES, LEVELS, type AuPair, type Diet, type Level } from '../data/aupairs'
+import { AREAS } from '../data/families'
 import { fetchOwnAuPair, formatMonth, nextMonths, removePhoto, saveOwnAuPair, uploadPhoto } from '../lib/store'
 import { useAuth } from '../lib/auth'
 import { images } from '../data/site'
 import { Chip, Img } from '../components/ui'
 
-const STEPS = ['Über dich', 'Sprache & Erfahrung', 'Dein Jahr']
+const STEPS = ['Über dich', 'Sprache & Erfahrung', 'Was dir wichtig ist', 'Dein Jahr']
+const MAX_CHILDREN = [1, 2, 3, 4, 5, 6]
 const DURATIONS = [6, 10, 12]
 const MAX_PHOTO = 5 * 1024 * 1024
 
@@ -40,6 +42,13 @@ export default function Register() {
     availableFrom: months[2],
     duration: 12,
     about: '',
+    swims: false,
+    smoker: false,
+    petsOk: true,
+    specialNeedsExperience: false,
+    maxChildren: 3,
+    areas: [] as string[],
+    diet: 'Alles' as Diet,
     consent: false,
   })
 
@@ -61,6 +70,13 @@ export default function Register() {
             availableFrom: own.availableFrom,
             duration: own.duration,
             about: own.about,
+            swims: own.swims,
+            smoker: own.smoker,
+            petsOk: own.petsOk,
+            specialNeedsExperience: own.specialNeedsExperience,
+            maxChildren: own.maxChildren,
+            areas: own.areas,
+            diet: own.diet,
             consent: true,
           })
         } else {
@@ -84,7 +100,7 @@ export default function Register() {
 
   const set = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) => setForm((f) => ({ ...f, [key]: value }))
 
-  const toggleIn = (key: 'languages' | 'experience', value: string) =>
+  const toggleIn = (key: 'languages' | 'experience' | 'areas', value: string) =>
     setForm((f) => ({
       ...f,
       [key]: f[key].includes(value) ? f[key].filter((v) => v !== value) : [...f[key], value],
@@ -119,6 +135,13 @@ export default function Register() {
         availableFrom: form.availableFrom,
         duration: form.duration,
         about: form.about.trim(),
+        swims: form.swims,
+        smoker: form.smoker,
+        petsOk: form.petsOk,
+        specialNeedsExperience: form.specialNeedsExperience,
+        maxChildren: form.maxChildren,
+        areas: form.areas,
+        diet: form.diet,
         photoPath,
       })
       setExisting(await fetchOwnAuPair(userId))
@@ -381,12 +404,68 @@ export default function Register() {
                     <Chip active={form.license} onClick={() => set('license', !form.license)}>
                       <Car size={14} /> Führerschein
                     </Chip>
+                    <Chip active={form.swims} onClick={() => set('swims', !form.swims)}>
+                      <Waves size={14} /> Kann schwimmen
+                    </Chip>
+                    <Chip
+                      active={form.specialNeedsExperience}
+                      onClick={() => set('specialNeedsExperience', !form.specialNeedsExperience)}
+                    >
+                      Kinder mit besonderem Förderbedarf
+                    </Chip>
                   </div>
                 </div>
               </>
             )}
 
             {step === 2 && (
+              <>
+                <div>
+                  <p className="label">Höchstens wie viele Kinder?</p>
+                  <div className="flex flex-wrap gap-2">
+                    {MAX_CHILDREN.map((n) => (
+                      <Chip key={n} active={form.maxChildren === n} onClick={() => set('maxChildren', n)}>
+                        {n === 6 ? '6+' : n}
+                      </Chip>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p className="label">Wo möchtest du am liebsten wohnen?</p>
+                  <div className="flex flex-wrap gap-2">
+                    {AREAS.map((a) => (
+                      <Chip key={a} active={form.areas.includes(a)} onClick={() => toggleIn('areas', a)}>
+                        {a}
+                      </Chip>
+                    ))}
+                  </div>
+                  <p className="mt-1.5 text-xs text-ink/50">Nichts gewählt heißt: Ist mir egal.</p>
+                </div>
+                <div>
+                  <p className="label">Ernährung</p>
+                  <div className="flex flex-wrap gap-2">
+                    {DIETS.map((d) => (
+                      <Chip key={d} active={form.diet === d} onClick={() => set('diet', d)}>
+                        {d === 'Alles' ? 'Ich esse alles' : d}
+                      </Chip>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p className="label">Haushalt</p>
+                  <div className="flex flex-wrap gap-2">
+                    <Chip active={form.petsOk} onClick={() => set('petsOk', !form.petsOk)}>
+                      <PawPrint size={14} /> Haustiere sind okay
+                    </Chip>
+                    <Chip active={form.smoker} onClick={() => set('smoker', !form.smoker)}>
+                      Ich rauche
+                    </Chip>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {step === 3 && (
               <>
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>

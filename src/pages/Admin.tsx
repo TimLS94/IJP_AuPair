@@ -167,7 +167,18 @@ export default function Admin() {
                 </p>
                 <p className="mt-3 whitespace-pre-line text-sm">{f.about}</p>
                 <div className="mt-3 flex flex-wrap gap-1.5">
-                  {[...f.childAges, ...f.tasks, ...f.languages].map((t) => (
+                  {[
+                    ...f.childAges,
+                    ...f.tasks,
+                    ...f.languages,
+                    `${f.hoursPerWeek} Std./Woche`,
+                    `${f.pocketMoney} € Taschengeld`,
+                    ...(f.needsSwimming ? ['Schwimmen nötig'] : []),
+                    ...(f.nonsmokerRequired ? ['Nur Nichtraucher'] : []),
+                    ...(f.specialNeeds ? ['Kind mit Förderbedarf'] : []),
+                    ...(f.singleParent ? ['Alleinerziehend'] : []),
+                    ...(f.diet !== 'Alles' ? [f.diet] : []),
+                  ].map((t) => (
                     <span key={t} className="tag">
                       {t}
                     </span>
@@ -235,7 +246,16 @@ export default function Admin() {
                 </p>
                 <p className="mt-3 text-sm">{a.about}</p>
                 <div className="mt-3 flex flex-wrap gap-1.5">
-                  {[...a.languages, ...a.experience].map((t) => (
+                  {[
+                    ...a.languages,
+                    ...a.experience,
+                    a.smoker ? 'Raucht' : 'Nichtraucher',
+                    ...(a.swims ? ['Schwimmt'] : []),
+                    ...(a.petsOk ? [] : ['Keine Haustiere']),
+                    ...(a.specialNeedsExperience ? ['Förderbedarf-Erfahrung'] : []),
+                    `Bis ${a.maxChildren >= 6 ? '6+' : a.maxChildren} Kinder`,
+                    ...(a.diet !== 'Alles' ? [a.diet] : []),
+                  ].map((t) => (
                     <span key={t} className="tag">
                       {t}
                     </span>

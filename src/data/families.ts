@@ -1,4 +1,4 @@
-import type { Level } from './aupairs'
+import type { Diet, Level } from './aupairs'
 
 export const AREAS = ['Großstadt', 'Kleinstadt', 'Ländlich'] as const
 export type Area = (typeof AREAS)[number]
@@ -19,6 +19,17 @@ export interface Family {
   startFrom: string
   duration: number
   about: string
+  hoursPerWeek: number
+  pocketMoney: number
+  courseSupport: boolean
+  ownBathroom: boolean
+  carPrivate: boolean
+  transitTicket: boolean
+  singleParent: boolean
+  specialNeeds: boolean
+  needsSwimming: boolean
+  nonsmokerRequired: boolean
+  diet: Diet
   photo?: string
   photoPath?: string | null
   status?: 'pending' | 'approved' | 'rejected'
