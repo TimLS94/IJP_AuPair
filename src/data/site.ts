@@ -12,8 +12,8 @@ export const company = {
   register: 'HRB 207656 B',
   ceo: 'Tim Schäfer',
   vatId: 'DE324792764',
-  // TODO vor dem Livegang: Hosting-Anbieter mit Anschrift eintragen (z. B. Vercel Inc., USA)
-  hosting: '[Hosting-Anbieter noch eintragen]',
+  hosting:
+    'Netlify, Inc., San Francisco, USA. Mit Netlify besteht ein Vertrag zur Auftragsverarbeitung nach Art. 28 DSGVO; die Übermittlung in die USA erfolgt auf Grundlage der EU-Standardvertragsklauseln.',
   privacyDate: 'November 2026',
 }
 
