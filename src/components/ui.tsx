@@ -5,22 +5,12 @@ export function Img({ src, alt, className = '' }: { src?: string; alt: string; c
 
   if (!src || failed) {
     return (
-      <div
-        role="img"
-        aria-label={alt}
-        className={`bg-gradient-to-br from-sand via-sun/40 to-coral/40 ${className}`}
-      />
+      <div role="img" aria-label={alt} className={`bg-gradient-to-br from-sand via-sun/40 to-coral/40 ${className}`} />
     )
   }
 
   return (
-    <img
-      src={src}
-      alt={alt}
-      loading="lazy"
-      onError={() => setFailed(true)}
-      className={`object-cover ${className}`}
-    />
+    <img src={src} alt={alt} loading="lazy" onError={() => setFailed(true)} className={`object-cover ${className}`} />
   )
 }
 
@@ -65,22 +55,13 @@ export function Reveal({
   )
 }
 
-export function Chip({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean
-  onClick: () => void
-  children: ReactNode
-}) {
+export function MatchBadge() {
+  return <span className="rounded-full bg-coral px-3 py-1 text-xs font-medium text-white">Match</span>
+}
+
+export function Chip({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) {
   return (
-    <button
-      type="button"
-      aria-pressed={active}
-      onClick={onClick}
-      className={`chip ${active ? 'chip-active' : ''}`}
-    >
+    <button type="button" aria-pressed={active} onClick={onClick} className={`chip ${active ? 'chip-active' : ''}`}>
       {children}
     </button>
   )

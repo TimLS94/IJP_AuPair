@@ -38,14 +38,7 @@ export const COUNTRIES = [
   { name: 'Anderes Land', flag: '🌍' },
 ]
 
-export const EXPERIENCE = [
-  'Babys',
-  'Kleinkinder',
-  'Schulkinder',
-  'Hausaufgabenhilfe',
-  'Kochen',
-  'Sport & Musik',
-]
+export const EXPERIENCE = ['Babys', 'Kleinkinder', 'Schulkinder', 'Hausaufgabenhilfe', 'Kochen', 'Sport & Musik']
 
 export const LANGUAGES = [
   'Englisch',

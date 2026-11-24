@@ -3,22 +3,20 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Calendar, Car, Clock, Heart, Languages, X } from 'lucide-react'
 import type { AuPair } from '../data/aupairs'
 import { formatMonth } from '../lib/store'
-import { Img } from './ui'
+import { Img, MatchBadge } from './ui'
 
 function Photo({ aupair, className }: { aupair: AuPair; className: string }) {
   if (aupair.photo) {
     return <Img src={aupair.photo} alt={aupair.name} className={className} />
   }
   return (
-    <div
-      className={`grid place-items-center bg-gradient-to-br from-sun/70 via-coral/60 to-coral ${className}`}
-    >
+    <div className={`grid place-items-center bg-gradient-to-br from-sun/70 via-coral/60 to-coral ${className}`}>
       <span className="font-display text-7xl text-white/90">{aupair.name.charAt(0).toUpperCase()}</span>
     </div>
   )
 }
 
-function FavButton({ active, onClick }: { active: boolean; onClick: () => void }) {
+export function FavButton({ active, onClick }: { active: boolean; onClick: () => void }) {
   return (
     <button
       type="button"
@@ -38,11 +36,13 @@ function FavButton({ active, onClick }: { active: boolean; onClick: () => void }
 export function AuPairCard({
   aupair,
   fav,
+  match = false,
   onFav,
   onOpen,
 }: {
   aupair: AuPair
   fav: boolean
+  match?: boolean
   onFav: () => void
   onOpen: () => void
 }) {
@@ -52,16 +52,16 @@ export function AuPairCard({
       className="card group cursor-pointer overflow-hidden transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-ink/5"
     >
       <div className="relative aspect-[4/5] overflow-hidden">
-        <Photo
-          aupair={aupair}
-          className="h-full w-full transition duration-500 group-hover:scale-105"
-        />
+        <Photo aupair={aupair} className="h-full w-full transition duration-500 group-hover:scale-105" />
         <div className="absolute right-3 top-3">
           <FavButton active={fav} onClick={onFav} />
         </div>
-        <span className="absolute bottom-3 left-3 rounded-full bg-white/90 px-3 py-1 text-xs font-medium backdrop-blur">
-          Deutsch {aupair.german}
-        </span>
+        <div className="absolute bottom-3 left-3 flex gap-1.5">
+          {match && <MatchBadge />}
+          <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium backdrop-blur">
+            Deutsch {aupair.german}
+          </span>
+        </div>
       </div>
 
       <div className="p-5">
@@ -153,8 +153,7 @@ export function AuPairModal({
                 <Languages size={12} /> Sprachen
               </dt>
               <dd>
-                Deutsch ({aupair.german})
-                {aupair.languages.length > 0 && `, ${aupair.languages.join(', ')}`}
+                Deutsch ({aupair.german}){aupair.languages.length > 0 && `, ${aupair.languages.join(', ')}`}
               </dd>
             </div>
             <div>
@@ -190,10 +189,7 @@ export function AuPairModal({
             </div>
           )}
 
-          <Link
-            to={`/kontakt?aupair=${encodeURIComponent(aupair.name)}`}
-            className="btn-coral mt-8 w-full"
-          >
+          <Link to={`/kontakt?aupair=${encodeURIComponent(aupair.name)}`} className="btn-coral mt-8 w-full">
             {aupair.name} über IJP anfragen <ArrowRight size={16} />
           </Link>
           <p className="mt-3 text-center text-xs text-ink/50">

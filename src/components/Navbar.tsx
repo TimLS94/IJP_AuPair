@@ -21,7 +21,16 @@ export default function Navbar() {
       ? { to: '/admin', label: 'Admin' }
       : profile?.role === 'aupair'
         ? { to: '/aupair', label: 'Mein Profil' }
-        : { to: '/familien', label: 'Merkliste' }
+        : { to: '/familie', label: 'Mein Profil' }
+
+  const sprachschule = { to: '/#sprachschule', label: 'Sprachschule' }
+  const matchesLink = { to: '/matches', label: 'Matches' }
+  const navLinks =
+    session && profile?.role === 'family'
+      ? [{ to: '/familien', label: 'Au-pair finden' }, matchesLink, sprachschule]
+      : session && profile?.role === 'aupair'
+        ? [{ to: '/gastfamilien', label: 'Familie finden' }, matchesLink, sprachschule]
+        : links
 
   const logout = async () => {
     await signOut()
@@ -45,7 +54,7 @@ export default function Navbar() {
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
-          {links.map((l) => (
+          {navLinks.map((l) => (
             <NavLink
               key={l.to}
               to={l.to}
@@ -82,7 +91,7 @@ export default function Navbar() {
 
       {open && (
         <nav className="container-x flex animate-pop flex-col gap-1 pb-5 md:hidden">
-          {links.map((l) => (
+          {navLinks.map((l) => (
             <Link key={l.to} to={l.to} className="rounded-2xl px-3 py-3 text-lg font-display hover:bg-sand">
               {l.label}
             </Link>

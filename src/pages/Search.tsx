@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ArrowRight, Car, Heart, Loader2, Search as SearchIcon, SlidersHorizontal } from 'lucide-react'
 import { EXPERIENCE, LEVELS, type AuPair, type Level } from '../data/aupairs'
 import { fetchApprovedAuPairs, formatMonth, nextMonths, useFavorites } from '../lib/store'
+import { fetchOwnFamily, useMatches } from '../lib/families'
+import { useAuth } from '../lib/auth'
 import { AuPairCard, AuPairModal } from '../components/AuPairCard'
 import { Chip } from '../components/ui'
 
@@ -28,8 +30,30 @@ export default function Search() {
 
   const { favs, toggle: toggleFav, canFavorite } = useFavorites()
   // Merkliste nur mit Familien-Konto – sonst zur Anmeldung.
-  const toggle = (id: string) =>
-    canFavorite ? toggleFav(id) : navigate('/login?modus=registrieren&rolle=family&next=/familien')
+  const toggle = async (id: string) => {
+    if (!canFavorite) {
+      navigate('/login?modus=registrieren&rolle=family&next=/familien')
+      return
+    }
+    const had = matches.some((m) => m.aupairId === id)
+    await toggleFav(id)
+    const now = await reloadMatches()
+    if (!had && now.some((m) => m.aupairId === id)) setNewMatch(all.find((a) => a.id === id)?.name ?? '')
+  }
+
+  const { session } = useAuth()
+  const familyUserId = canFavorite ? session?.user.id : undefined
+  const { matches, reload: reloadMatches } = useMatches()
+  const [newMatch, setNewMatch] = useState('')
+  const [hasProfile, setHasProfile] = useState(true)
+
+  useEffect(() => {
+    if (!familyUserId) return
+    fetchOwnFamily(familyUserId)
+      .then((f) => setHasProfile(Boolean(f)))
+      .catch(console.error)
+  }, [familyUserId])
+
   const [q, setQ] = useState('')
   const [country, setCountry] = useState('')
   const [language, setLanguage] = useState('')
@@ -78,6 +102,23 @@ export default function Search() {
       <p className="mt-4 max-w-xl text-ink/60">
         Stöbern Sie durch die Profile. Wenn jemand passt, fragen Sie über IJP an – wir kümmern uns um das Kennenlernen.
       </p>
+
+      {newMatch && (
+        <p className="mt-6 flex flex-wrap items-center gap-3 rounded-2xl bg-coral px-5 py-4 text-sm text-white">
+          Match mit {newMatch}!
+          <Link to="/matches" className="underline underline-offset-4">
+            Matches ansehen
+          </Link>
+        </p>
+      )}
+      {canFavorite && !hasProfile && (
+        <p className="mt-6 flex flex-wrap items-center gap-3 rounded-2xl bg-sun/40 px-5 py-4 text-sm">
+          Sie haben noch kein Familienprofil. Erst damit können Au-pairs Sie finden und ein Match entstehen.
+          <Link to="/familie" className="underline underline-offset-4">
+            Profil anlegen
+          </Link>
+        </p>
+      )}
 
       <div className="mt-10 flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">
@@ -213,6 +254,7 @@ export default function Search() {
               key={a.id}
               aupair={a}
               fav={favs.includes(a.id)}
+              match={matches.some((m) => m.aupairId === a.id)}
               onFav={() => toggle(a.id)}
               onOpen={() => setSelected(a)}
             />

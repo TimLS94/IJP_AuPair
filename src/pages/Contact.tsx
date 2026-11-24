@@ -10,21 +10,24 @@ const ROLES = ['Familie', 'Au-pair', 'Sprachschule', 'Sonstiges']
 export default function Contact() {
   const [params] = useSearchParams()
   const aupair = params.get('aupair')
+  const family = params.get('familie')
   const topic = params.get('thema')
 
   const [sent, setSent] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [form, setForm] = useState({
-    role: topic === 'sprachschule' ? 'Sprachschule' : 'Familie',
+    role: topic === 'sprachschule' ? 'Sprachschule' : family ? 'Au-pair' : 'Familie',
     name: '',
     email: '',
     phone: '',
     message: aupair
       ? `Hallo IJP-Team,\n\nwir interessieren uns für das Profil von ${aupair} und würden sie/ihn gern kennenlernen.\n\n`
-      : topic === 'sprachschule'
-        ? 'Hallo IJP-Team,\n\nich möchte mehr über die Sprachschule erfahren.\n\n'
-        : '',
+      : family
+        ? `Hallo IJP-Team,\n\nich interessiere mich für ${family} und würde die Familie gern kennenlernen.\n\n`
+        : topic === 'sprachschule'
+          ? 'Hallo IJP-Team,\n\nich möchte mehr über die Sprachschule erfahren.\n\n'
+          : '',
   })
 
   const set = (key: keyof typeof form, value: string) => setForm((f) => ({ ...f, [key]: value }))
@@ -102,9 +105,9 @@ export default function Contact() {
       </aside>
 
       <form onSubmit={onSubmit} className="card space-y-5 p-6 sm:p-10">
-        {aupair && (
+        {(aupair || family) && (
           <p className="rounded-2xl bg-sun/40 px-4 py-3 text-sm">
-            Anfrage zum Profil von <strong>{aupair}</strong>
+            Anfrage zum Profil von <strong>{aupair ?? family}</strong>
           </p>
         )}
         <div>

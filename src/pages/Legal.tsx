@@ -198,10 +198,25 @@ export function Datenschutz() {
       </section>
 
       <section>
-        <h2>7. Merkliste für Gastfamilien</h2>
+        <h2>7. Gastfamilien-Profile, Merklisten und Matches</h2>
+        <p>Wenn Sie als Gastfamilie ein Profil anlegen, verarbeiten wir:</p>
+        <ul>
+          <li>Anzeigename, Wohnort, Bundesland und Wohnlage</li>
+          <li>Anzahl und Altersgruppen der Kinder</li>
+          <li>Sprachen im Haushalt, gewünschte Deutschkenntnisse, Aufgaben, Führerschein und Haustiere</li>
+          <li>gewünschter Beginn und Dauer des Au-pair-Aufenthalts</li>
+          <li>Ihren Profiltext und, falls hochgeladen, Ihr Foto</li>
+        </ul>
         <p>
-          Wenn Sie als Gastfamilie Profile auf Ihre Merkliste setzen, speichern wir diese Auswahl in Ihrem Konto.
-          Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO.
+          Wir prüfen jedes Profil vor der Freigabe. Familienprofile sind <strong>nicht öffentlich</strong>; nach der
+          Freigabe sehen sie nur angemeldete Au-pairs. Rechtsgrundlage für diese Sichtbarkeit ist Ihre Einwilligung
+          (Art. 6 Abs. 1 lit. a DSGVO), die Sie jederzeit per E-Mail an {site.email} widerrufen können.
+        </p>
+        <p>
+          Gastfamilien und Au-pairs können Profile auf ihre Merkliste setzen; wir speichern diese Auswahl im jeweiligen
+          Konto. Die andere Seite erfährt davon nur, wenn beide sich gegenseitig gemerkt haben (Match). Ein Match sehen
+          die beiden Beteiligten und IJP. Kontaktdaten werden dabei nicht angezeigt; den Kontakt stellen ausschließlich
+          wir her. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO.
         </p>
       </section>
 

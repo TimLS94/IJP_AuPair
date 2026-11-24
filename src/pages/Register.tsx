@@ -158,15 +158,18 @@ export default function Register() {
             Interesse hat.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link to="/gastfamilien" className="btn-coral">
+              Familien ansehen <ArrowRight size={16} />
+            </Link>
             <button
               type="button"
               onClick={() => {
                 setDone(false)
                 setStep(0)
               }}
-              className="btn-primary"
+              className="btn-ghost"
             >
-              Profil bearbeiten <ArrowRight size={16} />
+              Profil bearbeiten
             </button>
             <Link to="/#sprachschule" className="btn-ghost">
               Mehr zur Sprachschule

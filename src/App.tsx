@@ -9,6 +9,9 @@ import Contact from './pages/Contact'
 import Login from './pages/Login'
 import Password from './pages/Password'
 import Admin from './pages/Admin'
+import FamilyProfile from './pages/FamilyProfile'
+import Families from './pages/Families'
+import Matches from './pages/Matches'
 import { Datenschutz, Impressum } from './pages/Legal'
 import { AuthProvider } from './lib/auth'
 import { configError, isConfigured } from './lib/supabase'
@@ -55,6 +58,9 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/familien" element={<Search />} />
             <Route path="/aupair" element={<Register />} />
+            <Route path="/familie" element={<FamilyProfile />} />
+            <Route path="/gastfamilien" element={<Families />} />
+            <Route path="/matches" element={<Matches />} />
             <Route path="/kontakt" element={<Contact />} />
             <Route path="/login" element={<Login />} />
             <Route path="/passwort" element={<Password />} />
