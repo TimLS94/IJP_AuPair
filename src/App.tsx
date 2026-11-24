@@ -11,7 +11,7 @@ import Password from './pages/Password'
 import Admin from './pages/Admin'
 import { Datenschutz, Impressum } from './pages/Legal'
 import { AuthProvider } from './lib/auth'
-import { isConfigured } from './lib/supabase'
+import { configError, isConfigured } from './lib/supabase'
 
 function ScrollManager() {
   const { pathname, hash } = useLocation()
@@ -31,10 +31,11 @@ function SetupNotice() {
   return (
     <div className="container-x py-24">
       <div className="card mx-auto max-w-lg p-8">
-        <h1 className="text-3xl">Supabase fehlt noch</h1>
-        <p className="mt-3 text-sm text-ink/70">
-          Bitte <code>.env.example</code> nach <code>.env</code> kopieren, <code>VITE_SUPABASE_URL</code> und{' '}
-          <code>VITE_SUPABASE_ANON_KEY</code> eintragen und den Dev-Server neu starten.
+        <h1 className="text-3xl">Supabase-Konfiguration prüfen</h1>
+        <p className="mt-3 rounded-2xl bg-coral/10 px-4 py-3 text-sm text-coral">{configError}</p>
+        <p className="mt-4 text-sm text-ink/70">
+          Lokal: Werte in <code>.env</code> eintragen und den Dev-Server neu starten. Netlify: unter Environment
+          variables korrigieren und neu deployen.
         </p>
       </div>
     </div>
