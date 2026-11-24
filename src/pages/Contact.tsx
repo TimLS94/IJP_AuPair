@@ -37,7 +37,8 @@ export default function Contact() {
       await saveMessage(form)
       setSent(true)
       window.scrollTo({ top: 0, behavior: 'smooth' })
-    } catch {
+    } catch (err) {
+      console.error(err)
       setError(`Senden hat nicht geklappt. Bitte schreiben Sie uns direkt an ${site.email}.`)
     } finally {
       setBusy(false)

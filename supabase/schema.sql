@@ -100,6 +100,18 @@ create table public.messages (
   created_at timestamptz not null default now()
 );
 
+-- ─── Tabellenrechte für die Website ─────────────────────────────────
+-- Neue Supabase-Projekte vergeben diese Rechte nicht mehr automatisch.
+-- Welche Zeilen jemand sehen/ändern darf, regeln danach die Policies unten.
+grant usage on schema public to anon, authenticated;
+grant select on public.profiles to authenticated;
+grant select on public.aupairs to anon, authenticated;
+grant insert, update, delete on public.aupairs to authenticated;
+grant select, insert, delete on public.favorites to authenticated;
+grant insert on public.messages to anon, authenticated;
+grant select, update on public.messages to authenticated;
+grant execute on function public.is_admin() to anon, authenticated;
+
 -- ─── Zugriffsregeln (Row Level Security) ─────────────────────────────
 alter table public.profiles enable row level security;
 alter table public.aupairs enable row level security;

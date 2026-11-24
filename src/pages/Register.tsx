@@ -67,7 +67,10 @@ export default function Register() {
           setForm((f) => ({ ...f, name: profile?.name ?? '' }))
         }
       })
-      .catch(() => setError('Profil konnte nicht geladen werden.'))
+      .catch((err) => {
+        console.error(err)
+        setError('Profil konnte nicht geladen werden.')
+      })
       .finally(() => setLoadingOwn(false))
   }, [userId, profile?.name])
 
@@ -122,7 +125,8 @@ export default function Register() {
       setPhoto(null)
       setDone(true)
       window.scrollTo({ top: 0, behavior: 'smooth' })
-    } catch {
+    } catch (err) {
+      console.error(err)
       setError('Speichern hat nicht geklappt. Bitte versuche es erneut.')
     } finally {
       setBusy(false)

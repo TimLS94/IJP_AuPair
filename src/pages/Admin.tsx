@@ -38,7 +38,8 @@ export default function Admin() {
       const [a, m] = await Promise.all([fetchAllAuPairs(), fetchMessages()])
       setAupairs(a)
       setMessages(m)
-    } catch {
+    } catch (err) {
+      console.error(err)
       setError('Daten konnten nicht geladen werden.')
     } finally {
       setBusy(false)
@@ -56,7 +57,8 @@ export default function Admin() {
     try {
       await fn()
       await reload()
-    } catch {
+    } catch (err) {
+      console.error(err)
       setError('Änderung konnte nicht gespeichert werden.')
     }
   }

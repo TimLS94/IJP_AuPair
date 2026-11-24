@@ -15,7 +15,10 @@ export default function Search() {
   useEffect(() => {
     fetchApprovedAuPairs()
       .then(setAll)
-      .catch(() => setLoadError(true))
+      .catch((err) => {
+        console.error(err)
+        setLoadError(true)
+      })
       .finally(() => setLoading(false))
   }, [])
 
