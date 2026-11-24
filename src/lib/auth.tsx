@@ -8,6 +8,8 @@ export interface Profile {
   id: string
   role: Role
   name: string
+  firstName: string
+  lastName: string
 }
 
 interface AuthState {
@@ -19,8 +21,16 @@ interface AuthState {
 const AuthContext = createContext<AuthState>({ session: null, profile: null, loading: true })
 
 async function loadProfile(userId: string): Promise<Profile | null> {
-  const { data } = await supabase.from('profiles').select('id, role, name').eq('id', userId).maybeSingle()
-  return data as Profile | null
+  // select('*'), damit der Login auch vor der Namens-Migration (04_names.sql) funktioniert
+  const { data } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle()
+  if (!data) return null
+  return {
+    id: data.id,
+    role: data.role,
+    name: data.name ?? '',
+    firstName: data.first_name ?? data.name ?? '',
+    lastName: data.last_name ?? '',
+  }
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -52,11 +62,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export const useAuth = () => useContext(AuthContext)
 
-export function signUp(email: string, password: string, role: 'aupair' | 'family', name: string) {
+export function signUp(
+  email: string,
+  password: string,
+  role: 'aupair' | 'family',
+  firstName: string,
+  lastName: string,
+) {
   return supabase.auth.signUp({
     email,
     password,
-    options: { data: { role, name }, emailRedirectTo: `${window.location.origin}/login` },
+    options: {
+      data: { role, name: firstName, first_name: firstName, last_name: lastName },
+      emailRedirectTo: `${window.location.origin}/login`,
+    },
   })
 }
 

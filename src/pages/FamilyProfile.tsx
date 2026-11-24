@@ -110,7 +110,7 @@ export default function FamilyProfile() {
             consent: true,
           })
         } else {
-          setForm((f) => ({ ...f, name: profile?.name ?? '' }))
+          setForm((f) => ({ ...f, name: profile?.lastName ? `Familie ${profile.lastName}` : (profile?.name ?? '') }))
         }
       })
       .catch((err) => {
@@ -118,7 +118,7 @@ export default function FamilyProfile() {
         setError('Profil konnte nicht geladen werden.')
       })
       .finally(() => setLoadingOwn(false))
-  }, [userId, profile?.name])
+  }, [userId, profile?.name, profile?.lastName])
 
   const previewUrl = useMemo(() => (photo ? URL.createObjectURL(photo) : undefined), [photo])
   useEffect(

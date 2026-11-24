@@ -4,6 +4,7 @@ import { Check, Loader2, Mail, RotateCcw, X } from 'lucide-react'
 import type { AuPair } from '../data/aupairs'
 import type { Family } from '../data/families'
 import {
+  fetchAccountNames,
   fetchAllAuPairs,
   fetchMessages,
   formatMonth,
@@ -39,6 +40,7 @@ export default function Admin() {
   const [messages, setMessages] = useState<ContactMessage[]>([])
   const [families, setFamilies] = useState<Family[]>([])
   const [matches, setMatches] = useState<Match[]>([])
+  const [names, setNames] = useState<Map<string, string>>(new Map())
   const [busy, setBusy] = useState(true)
   const [error, setError] = useState('')
 
@@ -47,7 +49,14 @@ export default function Admin() {
   const reload = useCallback(async () => {
     setError('')
     try {
-      const [a, m, f, ma] = await Promise.all([fetchAllAuPairs(), fetchMessages(), fetchAllFamilies(), fetchMatches()])
+      const [a, m, f, ma, n] = await Promise.all([
+        fetchAllAuPairs(),
+        fetchMessages(),
+        fetchAllFamilies(),
+        fetchMatches(),
+        fetchAccountNames(),
+      ])
+      setNames(n)
       setAupairs(a)
       setMessages(m)
       setFamilies(f)
@@ -159,6 +168,7 @@ export default function Admin() {
                 <p className="text-xl font-display">
                   {f.name} <span className="tag ml-1 font-sans">{STATUS_LABEL[f.status ?? 'pending']}</span>
                 </p>
+                {f.userId && names.get(f.userId) && <p className="text-sm text-ink/60">Konto: {names.get(f.userId)}</p>}
                 <p className="mt-1 text-sm text-ink/60">
                   {f.city}, {f.state} · {f.area} · {f.children} {f.children === 1 ? 'Kind' : 'Kinder'} · ab{' '}
                   {formatMonth(f.startFrom)} · {f.duration} Monate · Deutsch ab {f.minGerman}
@@ -240,6 +250,9 @@ export default function Admin() {
                     {a.flag} {a.country}
                   </span>
                 </p>
+                {a.userId && names.get(a.userId) && (
+                  <p className="text-sm text-ink/60">Vollständiger Name: {names.get(a.userId)}</p>
+                )}
                 <p className="mt-1 text-sm text-ink/60">
                   Deutsch {a.german} · ab {formatMonth(a.availableFrom)} · {a.duration} Monate
                   {a.license && ' · Führerschein'}

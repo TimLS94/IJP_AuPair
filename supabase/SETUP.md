@@ -3,7 +3,7 @@
 1. Neues Projekt anlegen: in einer Organisation mit **Free**-Tarif, Region **Frankfurt (eu-central-1)**.
 2. **SQL Editor** → Inhalt von `schema.sql` einfügen → *Run*.
    Danach genauso `02_families_matching.sql` (Familienprofile und Matching) und
-   `03_matching_details.sql` (Details für das Matching) ausführen.
+   `03_matching_details.sql` (Details für das Matching) und `04_names.sql` (Vor- und Nachname) ausführen.
 3. **Project Settings → API**: `Project URL` und `anon public` Key in `.env` eintragen (Vorlage: `.env.example`).
 4. **Authentication → URL Configuration**:
    - Site URL: die spätere Domain der Seite (lokal: `http://localhost:5173`)

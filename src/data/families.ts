@@ -32,6 +32,7 @@ export interface Family {
   diet: Diet
   photo?: string
   photoPath?: string | null
+  userId?: string
   status?: 'pending' | 'approved' | 'rejected'
 }
 

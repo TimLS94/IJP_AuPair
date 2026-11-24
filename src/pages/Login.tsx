@@ -13,7 +13,8 @@ export default function Login() {
 
   const [mode, setMode] = useState<Mode>(params.get('modus') === 'registrieren' ? 'register' : 'login')
   const [role, setRole] = useState<'aupair' | 'family'>(params.get('rolle') === 'aupair' ? 'aupair' : 'family')
-  const [name, setName] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -34,7 +35,9 @@ export default function Login() {
     setError('')
     setBusy(true)
     const { data, error } =
-      mode === 'login' ? await signIn(email.trim(), password) : await signUp(email.trim(), password, role, name.trim())
+      mode === 'login'
+        ? await signIn(email.trim(), password)
+        : await signUp(email.trim(), password, role, firstName.trim(), lastName.trim())
     setBusy(false)
     if (error) {
       setError(authErrorText(error.message))
@@ -96,12 +99,37 @@ export default function Login() {
                   </Chip>
                 </div>
               </div>
-              <div>
-                <label className="label" htmlFor="l-name">
-                  {role === 'family' ? 'Name' : 'Vorname'}
-                </label>
-                <input id="l-name" required value={name} onChange={(e) => setName(e.target.value)} className="input" />
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div>
+                  <label className="label" htmlFor="l-first">
+                    Vorname
+                  </label>
+                  <input
+                    id="l-first"
+                    required
+                    maxLength={100}
+                    autoComplete="given-name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className="input"
+                  />
+                </div>
+                <div>
+                  <label className="label" htmlFor="l-last">
+                    Nachname
+                  </label>
+                  <input
+                    id="l-last"
+                    required
+                    maxLength={100}
+                    autoComplete="family-name"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className="input"
+                  />
+                </div>
               </div>
+              {role === 'aupair' && <p className="-mt-2 text-xs text-ink/50">Familien sehen nur deinen Vornamen.</p>}
             </>
           )}
           <div>

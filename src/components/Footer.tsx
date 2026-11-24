@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { site } from '../data/site'
+import { languageSchool, site } from '../data/site'
 
 export default function Footer() {
   return (
@@ -28,9 +28,9 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/#sprachschule" className="hover:text-coral">
-                Sprachschule
-              </Link>
+              <a href={languageSchool.url} target="_blank" rel="noopener noreferrer" className="hover:text-coral">
+                {languageSchool.name} ↗
+              </a>
             </li>
           </ul>
         </div>

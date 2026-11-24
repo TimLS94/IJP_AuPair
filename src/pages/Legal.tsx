@@ -165,9 +165,9 @@ export function Datenschutz() {
       <section>
         <h2>5. Benutzerkonto</h2>
         <p>
-          Für die Registrierung verarbeiten wir Ihre E-Mail-Adresse, Ihren Namen, Ihre Rolle (Au-pair oder Gastfamilie)
-          und Ihr Passwort, das nur verschlüsselt (als Hash) gespeichert wird. Zur Bestätigung der E-Mail-Adresse und
-          zum Zurücksetzen des Passworts senden wir Ihnen E-Mails.
+          Für die Registrierung verarbeiten wir Ihre E-Mail-Adresse, Ihren Vor- und Nachnamen, Ihre Rolle (Au-pair oder
+          Gastfamilie) und Ihr Passwort, das nur verschlüsselt (als Hash) gespeichert wird. Zur Bestätigung der
+          E-Mail-Adresse und zum Zurücksetzen des Passworts senden wir Ihnen E-Mails.
         </p>
         <p>
           Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Nutzung unseres Vermittlungsangebots bzw. vorvertragliche

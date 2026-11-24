@@ -4,6 +4,12 @@ export const site = {
   hours: 'Mo–Fr, 9–17 Uhr',
 }
 
+export const languageSchool = {
+  name: 'Momente Sprachschule',
+  url: 'https://www.momente-sprachschule.com',
+  label: 'www.momente-sprachschule.com',
+}
+
 export const company = {
   name: 'IJP International Job Placement UG (haftungsbeschränkt)',
   street: 'Husemannstr. 9',

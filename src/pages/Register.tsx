@@ -5,7 +5,7 @@ import { COUNTRIES, DIETS, EXPERIENCE, LANGUAGES, LEVELS, type AuPair, type Diet
 import { AREAS } from '../data/families'
 import { fetchOwnAuPair, formatMonth, nextMonths, removePhoto, saveOwnAuPair, uploadPhoto } from '../lib/store'
 import { useAuth } from '../lib/auth'
-import { images } from '../data/site'
+import { images, languageSchool } from '../data/site'
 import { Chip, Img } from '../components/ui'
 
 const STEPS = ['Über dich', 'Sprache & Erfahrung', 'Was dir wichtig ist', 'Dein Jahr']
@@ -243,16 +243,18 @@ export default function Register() {
           begleitet dich – vom ersten Gespräch bis zum Deutschkurs vor Ort.
         </p>
         <ul className="mt-6 space-y-2 text-sm">
-          {['Kostenlos registrieren', 'Persönliche Ansprechperson bei IJP', 'Deutschkurs an der IJP Sprachschule'].map(
-            (t) => (
-              <li key={t} className="flex items-center gap-2.5">
-                <span className="grid h-5 w-5 place-items-center rounded-full bg-forest text-cream">
-                  <Check size={12} />
-                </span>
-                {t}
-              </li>
-            ),
-          )}
+          {[
+            'Kostenlos registrieren',
+            'Persönliche Ansprechperson bei IJP',
+            `Deutschkurs an der ${languageSchool.name}`,
+          ].map((t) => (
+            <li key={t} className="flex items-center gap-2.5">
+              <span className="grid h-5 w-5 place-items-center rounded-full bg-forest text-cream">
+                <Check size={12} />
+              </span>
+              {t}
+            </li>
+          ))}
         </ul>
         <Img
           src={images.heroFriends}
@@ -380,7 +382,7 @@ export default function Register() {
                     ))}
                   </div>
                   <p className="mt-1.5 text-xs text-ink/50">
-                    Noch nicht perfekt? Kein Problem – dafür gibt es die Sprachschule.
+                    Noch nicht perfekt? Kein Problem – dafür gibt es die {languageSchool.name}.
                   </p>
                 </div>
                 <div>

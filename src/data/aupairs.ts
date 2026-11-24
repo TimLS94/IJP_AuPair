@@ -26,6 +26,7 @@ export interface AuPair {
   diet: Diet
   photo?: string
   photoPath?: string | null
+  userId?: string
   status?: 'pending' | 'approved' | 'rejected'
 }
 

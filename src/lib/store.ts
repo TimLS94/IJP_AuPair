@@ -98,9 +98,12 @@ export async function fetchApprovedAuPairs(): Promise<AuPair[]> {
 }
 
 export async function fetchAllAuPairs(): Promise<AuPair[]> {
-  const { data, error } = await supabase.from('aupairs').select(COLUMNS).order('created_at', { ascending: false })
+  const { data, error } = await supabase
+    .from('aupairs')
+    .select(`${COLUMNS}, user_id`)
+    .order('created_at', { ascending: false })
   if (error) throw error
-  return (data as AuPairRow[]).map(fromRow)
+  return (data as (AuPairRow & { user_id: string })[]).map((r) => ({ ...fromRow(r), userId: r.user_id }))
 }
 
 export async function fetchOwnAuPair(userId: string): Promise<AuPair | null> {
@@ -153,6 +156,15 @@ export async function saveMessage(message: ContactMessage) {
     message: message.message,
   })
   if (error) throw error
+}
+
+/** Nur für Admins: vollständige Namen aller Konten, nach Benutzer-ID. */
+export async function fetchAccountNames(): Promise<Map<string, string>> {
+  const { data, error } = await supabase.from('profiles').select('*')
+  if (error) throw error
+  return new Map(
+    (data ?? []).map((p) => [p.id as string, [p.first_name ?? p.name, p.last_name].filter(Boolean).join(' ')]),
+  )
 }
 
 export async function fetchMessages(): Promise<ContactMessage[]> {

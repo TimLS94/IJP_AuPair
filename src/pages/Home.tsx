@@ -12,7 +12,7 @@ import {
   Sparkles,
   Users,
 } from 'lucide-react'
-import { images } from '../data/site'
+import { images, languageSchool } from '../data/site'
 import { Img, Reveal } from '../components/ui'
 
 const greetings = [
@@ -271,7 +271,7 @@ export default function Home() {
           </Reveal>
 
           <Reveal delay={100} className="order-1 md:order-2">
-            <p className="eyebrow !text-sun">Die IJP Sprachschule</p>
+            <p className="eyebrow !text-sun">{languageSchool.name}</p>
             <h2 className="mt-3 text-4xl sm:text-5xl">Mehr als Betreuung: Sprache, die verbindet.</h2>
             <p className="mt-5 max-w-md text-cream/70">
               Ein Au-pair-Jahr gelingt, wenn man sich versteht. Deshalb gehört bei IJP der Deutschkurs fest dazu. Ihr
@@ -291,9 +291,17 @@ export default function Home() {
                 </li>
               ))}
             </ul>
-            <Link to="/kontakt?thema=sprachschule" className="btn-light mt-10">
-              Zur Sprachschule beraten lassen <ArrowRight size={16} />
-            </Link>
+            <div className="mt-10 flex flex-wrap gap-3">
+              <a href={languageSchool.url} target="_blank" rel="noopener noreferrer" className="btn-light">
+                {languageSchool.label} <ArrowUpRight size={16} />
+              </a>
+              <Link
+                to="/kontakt?thema=sprachschule"
+                className="btn border border-cream/30 text-cream hover:bg-cream/10"
+              >
+                Beraten lassen <ArrowRight size={16} />
+              </Link>
+            </div>
           </Reveal>
         </div>
       </section>

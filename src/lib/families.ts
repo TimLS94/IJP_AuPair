@@ -117,9 +117,12 @@ export async function fetchApprovedFamilies(): Promise<Family[]> {
 }
 
 export async function fetchAllFamilies(): Promise<Family[]> {
-  const { data, error } = await supabase.from('families').select(COLUMNS).order('created_at', { ascending: false })
+  const { data, error } = await supabase
+    .from('families')
+    .select(`${COLUMNS}, user_id`)
+    .order('created_at', { ascending: false })
   if (error) throw error
-  return (data as FamilyRow[]).map(fromRow)
+  return (data as (FamilyRow & { user_id: string })[]).map((r) => ({ ...fromRow(r), userId: r.user_id }))
 }
 
 export async function fetchOwnFamily(userId: string): Promise<Family | null> {
