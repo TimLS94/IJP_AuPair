@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-cream font-sans text-ink antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display tracking-tight;
+  }
+  section[id] {
+    scroll-margin-top: 5rem;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-ink text-cream hover:bg-coral;
+  }
+  .btn-coral {
+    @apply btn bg-coral text-white hover:bg-ink;
+  }
+  .btn-ghost {
+    @apply btn border border-ink/15 bg-transparent text-ink hover:border-ink hover:bg-white;
+  }
+  .btn-light {
+    @apply btn bg-cream text-ink hover:bg-sun;
+  }
+  .input {
+    @apply w-full rounded-2xl border border-ink/10 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-ink/40 focus:border-ink/40 focus:ring-4 focus:ring-coral/15;
+  }
+  .label {
+    @apply mb-1.5 block text-xs font-medium uppercase tracking-wider text-ink/60;
+  }
+  .chip {
+    @apply inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full border border-ink/10 bg-white px-3.5 py-1.5 text-sm text-ink/80 transition hover:border-ink/40;
+  }
+  .chip-active {
+    @apply border-ink bg-ink text-cream hover:border-ink;
+  }
+  .tag {
+    @apply inline-flex items-center gap-1 rounded-full bg-sand px-2.5 py-1 text-xs text-ink/80;
+  }
+  .eyebrow {
+    @apply text-xs font-medium uppercase tracking-[0.2em] text-coral;
+  }
+  .card {
+    @apply rounded-3xl border border-ink/5 bg-white;
+  }
+}
